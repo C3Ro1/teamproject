@@ -1,0 +1,13 @@
+Here we have our following tasks
+
+1. Farbezuweisung
+2. Konstellationszuweisung
+3. ExcelDatei Erstellung
+
+4. Psychopy:::
+4.1 Tabelle nutzen?
+4.2 Maskierung
+4.3 PsychoPy Maus nutzen (visualisierung von Auswahl)
+4.4 Auswahl ändern
+4.5 Feedback in PsychoPy
+
