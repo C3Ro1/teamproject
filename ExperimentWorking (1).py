@@ -80,14 +80,6 @@ for i in range(12):
     worksheetShapes.write(i + 24, 1, const[i + 24])
     worksheetShapes.write(i + 36, 1, const[i + 36])
 
-#create a workbook object for stimuli file
-workbook = xlsxwriter.Workbook(path + r"\stimuli.xlsx")
-worksheet = workbook.add_worksheet()
 
-workbook_shapes = xlrd.open_workbook(path + r"\shapes.xlsx")
-shapesheet = workbook_shapes.sheet_by_index(0)
-
-
-rowList = []
 
 workbookStart.close()
