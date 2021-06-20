@@ -99,8 +99,31 @@ for i in order:
     rep = repetition[i]
     #getNeighbor(element)
     print(getFirst(element, i, constTrial))
-    
-# def getNeighbor(element):
+
+#create a workbook object for stimuli file
+workbook = xlsxwriter.Workbook(path + r"\stimuli.xlsx")
+worksheet = workbook.add_worksheet()
+
+workbook_shapes = xlrd.open_workbook(path + r"\shapes.xlsx")
+shapesheet = workbook_shapes.sheet_by_index(0)
+
+
+rowList = []
+
+def getFirst(element, i, constTrial):
+    idx = const.index(constTrial)
+    return idx
+
+for i in order:
+    element = shapesheet.cell_value(i, 0)
+    print(element)
+    constTrial = shapesheet.cell_value(i, 1)
+    print("constTrial: " + str(constTrial))
+    #rowList.append(getFirst(element, i, constTrial))
+    rowList.append(element)
+    rep = repetition[i]
+    #getNeighbor(element)
+    print(getFirst(element, i, constTrial))
  
 
 workbookStart.close()
