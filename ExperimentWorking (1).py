@@ -10,6 +10,7 @@ print("Hello World!")
 
 #Hello World
 
+
 import xlsxwriter
 import xlrd
 import random
@@ -51,11 +52,17 @@ order = [x % 24 for x in range(num_trials)]
 random.shuffle(order)
 #print(order)
 
+#array with colors
+color = ["g", "g", "g", "g", "g", "g", "r", "r", "r", "r", "r", "r"] * 4
+print(color)
+
 #array with numbers for constellation of pairs
-const12 = [x % 6 for x in range(12)]
+const1 = [x % 3 for x in range(6)]
+const2 = [(x % 3) + 3 for x in range(6)]
 # randomizing the order of constellations
-random.shuffle(const12)
-const = const12 + const12 + const12 + const12
+random.shuffle(const1)
+random.shuffle(const2)
+const = (const1 + const2) * 4
 print(const)
 
 #array with numbers of repetition (this and next position; 1 = second element)
@@ -78,10 +85,14 @@ for i in range(12):
     worksheetShapes.write(i + 12, 0, listLight[i])
     worksheetShapes.write(i + 24, 0, listDark[i + 12])
     worksheetShapes.write(i + 36, 0, listLight[i + 12])
-    worksheetShapes.write(i, 1, const[i])
-    worksheetShapes.write(i + 12, 1, const[i + 12])
-    worksheetShapes.write(i + 24, 1, const[i + 24])
-    worksheetShapes.write(i + 36, 1, const[i + 36])
+    worksheetShapes.write(i, 1, color[i])
+    worksheetShapes.write(i + 12, 1, color[i + 12])
+    worksheetShapes.write(i + 24, 1, color[i + 24])
+    worksheetShapes.write(i + 36, 1, color[i + 36])
+    worksheetShapes.write(i, 2, const[i])
+    worksheetShapes.write(i + 12, 2, const[i + 12])
+    worksheetShapes.write(i + 24, 2, const[i + 24])
+    worksheetShapes.write(i + 36, 2, const[i + 36])
 
 
 
