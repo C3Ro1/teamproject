@@ -4,7 +4,11 @@ Created on Sat Jun 19 15:51:06 2021
 
 @author: Kathi
 """
+print("Hello World")
 
+print("Hello World!")
+
+#Hello World
 
 
 import xlsxwriter
@@ -90,6 +94,8 @@ for i in range(12):
     worksheetShapes.write(i + 24, 2, const[i + 24])
     worksheetShapes.write(i + 36, 2, const[i + 36])
 
+
+
 #create a workbook object for stimuli file
 workbook = xlsxwriter.Workbook(path + r"\stimuli.xlsx")
 worksheet = workbook.add_worksheet()
@@ -114,9 +120,6 @@ for i in order:
     rep = repetition[i]
     #getNeighbor(element)
     print(getFirst(element, i, constTrial))
-    
-# def getNeighbor(element):
  
 
-  
 workbookStart.close()
