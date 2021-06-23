@@ -6,20 +6,30 @@ Created on Sat Jun 19 15:51:06 2021
 """
 
 
-
 import xlsxwriter
-import xlrd
 import random
-#randomize the seed
-random.seed(1234)
 
+#########################
+##### GENERAL CODE ######
+#########################
+
+#randomize the seed!
+random.seed(1234)
+#not important for psychopy, has to be adapted later
 path = r"C:\Users\Kathi\Documents\Studium Kognitionswissenschaft\4. Semester\Teamprojekt visuelle Wahrnehmung\Programmieren\ExperimentProgrammierung"
 
-
+#we always want to change the pairs for every participant
+#could be left out
 randomPairs = True 
+
+#definitions that will be important later
+#variables that are used in the code
 
 listDark = []
 listLight = [] 
+
+#number of trials
+num_trials = 120
 
 #create lists of shapenames
 def picName(number, color):
@@ -36,21 +46,10 @@ if(randomPairs):
     random.shuffle(temp)
     listDark, listLight = zip(*temp)
 
-row = 0
-col = 0
-
-#number of trials
-num_trials = 120
-
-#array with numbers (starting/second shape)
-order = [x % 24 for x in range(num_trials)]
-#randomizing the order of the initial shapes
-random.shuffle(order)
-#print(order)
-
 #array with colors
 color = ["g", "g", "g", "g", "g", "g", "r", "r", "r", "r", "r", "r"] * 4
 print(color)
+
 
 #array with numbers for constellation of pairs
 const1 = [x % 3 for x in range(6)]
@@ -61,20 +60,11 @@ random.shuffle(const2)
 const = (const1 + const2) * 4
 print(const)
 
-#array with numbers of repetition (this and next position; 1 = second element)
-repetition = [(x % 9) for x in range(num_trials)]
-random.shuffle(repetition)
-print(repetition)
-    
 
 #create workbook object for shapes file
 workbookStart = xlsxwriter.Workbook(path + r"\shapes.xlsx")
 worksheetShapes = workbookStart.add_worksheet()
 
-#create input of shapes file 
-#for i in range(len(listDark)):
-#    worksheetShapes.write(0, i, listDark[i])
-#    worksheetShapes.write(1, i, listLight[i])
 
 #create input of shapes file 
 for i in range(12):
@@ -91,18 +81,35 @@ for i in range(12):
     worksheetShapes.write(i + 24, 2, const[i + 24])
     worksheetShapes.write(i + 36, 2, const[i + 36])
 
+#same list internal in python (access to shapes.xlsx file theoretically unnecessary)    
+listShapes = listDark[:12] + listLight[:12] + listDark[12:] + listLight[12:] 
+
+#######################################################
+####### code for SECOND PART of the experiment ########
+#######################################################
+
 #create a workbook object for stimuli file
 workbook = xlsxwriter.Workbook(path + r"\stimuli.xlsx")
 worksheet = workbook.add_worksheet()
 
-workbook_shapes = xlrd.open_workbook(path + r"\shapes.xlsx")
-shapesheet = workbook_shapes.sheet_by_index(0)
+#array with numbers (starting/second shape)
+order = [x % 24 for x in range(num_trials)]
+#randomizing the order of the initial shapes
+random.shuffle(order)
+#print(order)
 
+
+#array with numbers of repetition (this and next position; 1 = second element)
+repetition = [(x % 9) for x in range(num_trials)]
+random.shuffle(repetition)
+print(repetition)
 
 rowList = []
+row = 0
+repidx = 0
 
-
-
+#function which gives back the first of the eleven figures of a row
+#different shape and color than randomly chosen "start/second element"
 def getFirst(element, i, constTrial):
     first3 = []
     idx1 = const.index(constTrial)
@@ -192,17 +199,10 @@ def getRepetition(element, i, constTrial, j):
             print("Error")
     return nxt
 
-listShapes = listDark[:12] + listLight[:12] + listDark[12:] + listLight[12:] 
-print(order)
-
-row = 0
-repidx = 0
-
+#create the file stimuli.xlsx with 120 rows and 11 columns
 for i in order:
     element = listShapes[i]
-    #print(element)
     constTrial = const[i]
-    #print(constTrial)
     first = getFirst(element, i, constTrial)
     rowList.append(first)
     rowList.append(element)
@@ -213,12 +213,10 @@ for i in order:
         #if repetition is reached, add next element in same color
         if(rep == j):
             nxt = getRepetition(element, i, constTrial, j)
-            #print(element, nxt)
             rowList.append(nxt)
         #else add next element in different color
         else:
             nxt = getNeighbor(element, i, constTrial, j)
-            #print(element, nxt)
             rowList.append(nxt)
         #this new element is the basis for the following element
         element = nxt
@@ -231,7 +229,98 @@ for i in order:
     rowList = []   
     
  
+#######################################################
+####### code for FIRST PART of the experiment ########
+#######################################################   
+ 
+#create a workbook object for stimuli file
+workbookStream = xlsxwriter.Workbook(path + r"\stream.xlsx")
+streamsheet = workbookStream.add_worksheet()
 
+# For each observer, 12 shapes were assigned to the red group, 
+# and the remaining 12 shapes were assigned to the green group. 
+# Within each color, the 12 shapes were further divided into six groups of 
+# two shapes. Separate temporal streams were first generated for each color, 
+# consisting of 24 repetitions of each tupel randomly intermixed. 
+# To manipulate attention (as described below), we also included in each stream 
+# 24 instances in which the second shape of a tupel was immediately repeated 
+# (e.g., ABBCD). Each stream thus included a total of 312 shapes
+
+
+# every pair occurs 24 times (24*24) and 24 repetitions occurs futhermore in each (!)stream
+# -> 624 = 24*24 + 24 + 24 = 312 + 312 shapes in total
+
+#array with green shapes (first part of the pairs) in order of access
+#144 first shapes of pair (144 + 144 = 288)
+rndmGreen = [x % 12 for x in range(6*24)]
+#randomizing the order of the shapes
+random.shuffle(rndmGreen)
+print(rndmGreen)
+
+#array with red shapes (first part of the pairs) in order of access
+rndmRed = [(x % 12) + 12 for x in range(6*24)]
+#randomizing the order of the shapes
+random.shuffle(rndmRed)
+
+#array with random numbers of repetition (24 repetitions in each stream)
+#(the second shape of this pair will be repeated)
+repSecond = [x for x in range(6*24)]
+random.shuffle(repSecond)
+repSecondG = repSecond[:24]
+repSecondR = repSecond[24:48]
+repSecondG.sort()
+repSecondR.sort()
+print(repSecondG)
+print(len(repSecondG))
+print(repSecondR)
+print(len(repSecondR))
+
+redStream = []
+greenStream = []
+
+def getRepPair(i, green):
+    if(green):
+        greenStream.append(listShapes[rndmGreen[i]])
+        greenStream.append(listShapes[rndmGreen[i] + 24])
+        greenStream.append(listShapes[rndmGreen[i] + 24])
+    else:
+        redStream.append(listShapes[rndmRed[i]])
+        print(listShapes[rndmRed[i] + 24])
+        redStream.append(listShapes[rndmRed[i] + 24])
+        redStream.append(listShapes[rndmRed[i] + 24])
     
+def getPair(i, green):
+    if(green):
+        greenStream.append(listShapes[rndmGreen[i]])
+        greenStream.append(listShapes[rndmGreen[i] + 24])
+    else:
+        redStream.append(listShapes[rndmRed[i]])
+        redStream.append(listShapes[rndmRed[i] + 24])
+
+j = 0
+
+#create the green stream
+for i in range(6*24):
+    if(j < 24 and i == repSecondG[j]):
+        getRepPair(i, True)
+        j = j + 1
+    else:
+        getPair(i, True)
+   
+k = 0
+
+#create the red stream
+for i in range(6*24):
+    print("red: " + str(k) + " " + str(i) + " " + str(repSecondR[k]))
+    if(k < 24 and i == repSecondR[k]):
+        getRepPair(i, False)
+        k = k + 1
+    else:
+        getPair(i, False)
+
+print(redStream)
+print(greenStream)
+
 workbookStart.close()
 workbook.close()
+workbookStream.close()
