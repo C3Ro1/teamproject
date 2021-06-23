@@ -15,6 +15,7 @@ import random
 
 #randomize the seed!
 random.seed(1234)
+#random.seed()
 #not important for psychopy, has to be adapted later
 path = r"C:\Users\Kathi\Documents\Studium Kognitionswissenschaft\4. Semester\Teamprojekt visuelle Wahrnehmung\Programmieren\ExperimentProgrammierung"
 
@@ -27,6 +28,8 @@ randomPairs = True
 
 listDark = []
 listLight = [] 
+listRed = []
+listGreen = []
 
 #number of trials
 num_trials = 120
@@ -34,9 +37,14 @@ num_trials = 120
 #create lists of shapenames
 def picName(number, color):
     return color + str(number) + ".bmp"
+
 for i in range(1, 25):
     listDark.append(picName(i, "dark"))
     listLight.append(picName(i, "light"))
+    
+for i in range(1, 25):
+    listRed.append(picName(i, "red"))
+    listGreen.append(picName(i, "green"))
 
 #shuffle pairs if necessary
 if(randomPairs):
@@ -45,6 +53,10 @@ if(randomPairs):
     temp = list(zip(listDark, listLight))
     random.shuffle(temp)
     listDark, listLight = zip(*temp)
+    temp = list(zip(listGreen, listRed))
+    random.shuffle(temp)
+    listGreen, listRed = zip(*temp)
+    
 
 #array with colors
 color = ["g", "g", "g", "g", "g", "g", "r", "r", "r", "r", "r", "r"] * 4
@@ -83,6 +95,8 @@ for i in range(12):
 
 #same list internal in python (access to shapes.xlsx file theoretically unnecessary)    
 listShapes = listDark[:12] + listLight[:12] + listDark[12:] + listLight[12:] 
+
+listColors = listGreen[:12] + listRed[:12] + listGreen[12:] + listRed[12:] 
 
 #######################################################
 ####### code for SECOND PART of the experiment ########
@@ -252,15 +266,63 @@ streamsheet = workbookStream.add_worksheet()
 
 #array with green shapes (first part of the pairs) in order of access
 #144 first shapes of pair (144 + 144 = 288)
-rndmGreen = [x % 12 for x in range(6*24)]
+green = [x % 12 for x in range(6*24)]
+rndmGreen = []
+x = -1
+y = -1
+z = -1
+for i in range(6*24):
+    if(len(green) > 4):
+        r = random.sample(green, 1)[0]
+        while(z == r or (x == z and y == r)):
+            r = random.sample(green, 1)[0]
+        rndmGreen.append(r)
+        green.remove(r)
+        x = y
+        y = z
+        z = r
+    else: 
+        r = random.sample(green, 1)[0]
+        if (z == r or (x == z and y == r)):
+            r = random.sample(green, 1)[0]
+        rndmGreen.append(r)
+        green.remove(r)
+        x = y
+        y = z
+        z = r
+    
 #randomizing the order of the shapes
-random.shuffle(rndmGreen)
+#random.shuffle(rndmGreen)
 print(rndmGreen)
 
 #array with red shapes (first part of the pairs) in order of access
-rndmRed = [(x % 12) + 12 for x in range(6*24)]
+red = [(x % 12) + 12 for x in range(6*24)]
 #randomizing the order of the shapes
-random.shuffle(rndmRed)
+#random.shuffle(rndmRed)
+rndmRed = []
+x = -1
+y = -1
+z = -1
+for i in range(6*24):
+    if(len(red) > 4):
+        r = random.sample(red, 1)[0]
+        while(z == r or (x == z and y == r)):
+            r = random.sample(red, 1)[0]
+        rndmRed.append(r)
+        red.remove(r)
+        x = y
+        y = z
+        z = r
+    else: 
+        r = random.sample(red, 1)[0]
+        if (z == r or (x == z and y == r)):
+            r = random.sample(red, 1)[0]
+        rndmRed.append(r)
+        red.remove(r)
+        x = y
+        y = z
+        z = r
+print(rndmRed)
 
 #array with random numbers of repetition (24 repetitions in each stream)
 #(the second shape of this pair will be repeated)
@@ -270,32 +332,31 @@ repSecondG = repSecond[:24]
 repSecondR = repSecond[24:48]
 repSecondG.sort()
 repSecondR.sort()
-print(repSecondG)
-print(len(repSecondG))
-print(repSecondR)
-print(len(repSecondR))
+#print(repSecondG)
+#print(len(repSecondG))
+#print(repSecondR)
+#print(len(repSecondR))
 
 redStream = []
 greenStream = []
 
 def getRepPair(i, green):
     if(green):
-        greenStream.append(listShapes[rndmGreen[i]])
-        greenStream.append(listShapes[rndmGreen[i] + 24])
-        greenStream.append(listShapes[rndmGreen[i] + 24])
+        greenStream.append(listColors[rndmGreen[i]])
+        greenStream.append(listColors[rndmGreen[i] + 24])
+        greenStream.append(listColors[rndmGreen[i] + 24])
     else:
-        redStream.append(listShapes[rndmRed[i]])
-        print(listShapes[rndmRed[i] + 24])
-        redStream.append(listShapes[rndmRed[i] + 24])
-        redStream.append(listShapes[rndmRed[i] + 24])
+        redStream.append(listColors[rndmRed[i]])
+        redStream.append(listColors[rndmRed[i] + 24])
+        redStream.append(listColors[rndmRed[i] + 24])
     
 def getPair(i, green):
     if(green):
-        greenStream.append(listShapes[rndmGreen[i]])
-        greenStream.append(listShapes[rndmGreen[i] + 24])
+        greenStream.append(listColors[rndmGreen[i]])
+        greenStream.append(listColors[rndmGreen[i] + 24])
     else:
-        redStream.append(listShapes[rndmRed[i]])
-        redStream.append(listShapes[rndmRed[i] + 24])
+        redStream.append(listColors[rndmRed[i]])
+        redStream.append(listColors[rndmRed[i] + 24])
 
 j = 0
 
@@ -311,15 +372,17 @@ k = 0
 
 #create the red stream
 for i in range(6*24):
-    print("red: " + str(k) + " " + str(i) + " " + str(repSecondR[k]))
+    #print("red: " + str(k) + " " + str(i) + " " + str(repSecondR[k]))
     if(k < 24 and i == repSecondR[k]):
         getRepPair(i, False)
         k = k + 1
     else:
         getPair(i, False)
 
-print(redStream)
-print(greenStream)
+#print(redStream)
+#print(greenStream)
+#print(len(redStream))
+#print(len(greenStream))
 
 interleaved = []
 
@@ -334,6 +397,12 @@ for i in ctr:
     else:
         interleaved.append(redStream[r])
         r = r + 1
+        
+#print(interleaved)
+#print(len(interleaved))
+
+for k in range(len(interleaved)):
+    streamsheet.write(k, 0, interleaved[k])
 
 workbookStart.close()
 workbook.close()
