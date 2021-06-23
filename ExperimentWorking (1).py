@@ -331,7 +331,7 @@ for i in ctr:
         interleaved.append(greenStream[g])
         g = g + 1
     else:
-        interleaved.append(greenStream[r])
+        interleaved.append(redStream[r])
         r = r + 1
 
 workbookStart.close()
