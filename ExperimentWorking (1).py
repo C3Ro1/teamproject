@@ -324,6 +324,7 @@ print(greenStream)
 interleaved = []
 
 ctr = [(x % 2) for x in range(624)]
+ctr.shuffle()
 g = 0
 r = 0
 for i in ctr:
