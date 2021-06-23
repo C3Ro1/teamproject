@@ -321,6 +321,19 @@ for i in range(6*24):
 print(redStream)
 print(greenStream)
 
+interleaved = []
+
+ctr = [(x % 2) for x in range(624)]
+g = 0
+r = 0
+for i in ctr:
+    if(i == 0):
+        interleaved.append(greenStream[g])
+        g = g + 1
+    else:
+        interleaved.append(greenStream[r])
+        r = r + 1
+
 workbookStart.close()
 workbook.close()
 workbookStream.close()
